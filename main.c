@@ -38,6 +38,15 @@ void graph_add_vertex(Graph *graph, int vertex) {
   graph->count++;
 }
 
+void graph_del(Graph *graph) {
+  for (size_t i = 0; i < graph->count; i++) {
+    free(graph->v[i].data);
+    graph->v[i].size = 0;
+    graph->v[i].capacity = 0;
+  }
+  graph->count = 0;
+}
+
 typedef int Set;
 typedef int Queue;
 
@@ -78,6 +87,8 @@ int main() {
 
   graph_add_vertex(&g, 23);
   printf("%d\n", g.v[0].data[0]);
+  graph_del(&g);
+  printf("%zu %zu %zu\n", g.count, g.v[0].size, g.v[0].capacity);
 
   return 0;
 }

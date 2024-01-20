@@ -41,6 +41,7 @@ int main() {
   // generating a graph of 100 vertices
   create_huge_graph(&g);
   bfs(&g, 0);
+  graph_del(&g);
 
   return 0;
 }

@@ -1,5 +1,5 @@
 #define GRAPH_H_IMPLEMENTATION
-#include "graph.h"
+#include "Graph.h"
 
 int main() {
   Graph g = graph_init();

@@ -22,6 +22,7 @@ typedef struct {
 typedef struct {
   Vertices v[GRAPH_VERTEX_MAX];
   size_t count;
+  size_t max_id;
 } Graph;
 
 Graph graph_init(void);
@@ -90,13 +91,23 @@ void graph_add_vertex(Graph *graph, size_t vertex_a, size_t vertex_b) {
          "Vertex ID too high!");
   assert(graph->count <= GRAPH_VERTEX_MAX && "Maximum vertices reached!");
 
+  // set new maximum vertex
+  size_t max = (vertex_a > vertex_b) ? vertex_a : vertex_b;
+  if (graph->max_id < max) {
+    graph->max_id = max;
+  }
+
   // vertex didnt previously exist
   if (graph->v[vertex_a].size == 0) {
     graph->count++;
-    DYN_ADD(&graph->v[vertex_a], vertex_b);
   }
-  if (graph->v[vertex_b].size == 0 && vertex_a != vertex_b) {
-    graph->count++;
+  DYN_ADD(&graph->v[vertex_a], vertex_b);
+
+  // add the opposite vertex only if they are not same
+  if (vertex_a != vertex_b) {
+    if (graph->v[vertex_b].size == 0) {
+      graph->count++;
+    }
     DYN_ADD(&graph->v[vertex_b], vertex_a);
   }
 }
@@ -156,6 +167,9 @@ static inline void bfs_main(Graph *graph, Queue *vertices, bool *visited) {
 
 // Perform Breadth First Search
 void bfs(Graph *graph, size_t start) {
+  if (graph->v[start].size == 0) {
+    return;
+  }
   Queue vertices = que_init();
   queue_push(&vertices, start);
 
@@ -164,8 +178,8 @@ void bfs(Graph *graph, size_t start) {
   queue_del(&vertices);
 
   // handle disconnected vertices
-  for (size_t i = 0; i < graph->count; i++) {
-    if (visited[i] > 0) {
+  for (size_t i = 0; i <= graph->max_id; i++) {
+    if (visited[i] == true || graph->v[i].size == 0) {
       continue;
     }
     queue_push(&vertices, i);

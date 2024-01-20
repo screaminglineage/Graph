@@ -5,6 +5,9 @@ int main() {
   Graph g = graph_init();
 
   graph_add_vertex(&g, 0, 1);
+
+  // arbitrary vertices can be added out of order
+  // as long as the vertex ID is below GRAPH_VERTEX_MAX
   graph_add_vertex(&g, 0, 25);
   graph_add_vertex(&g, 0, 2);
 
@@ -22,6 +25,7 @@ int main() {
 
   // BFS works with disconnected vertices as well
   graph_add_vertex(&g, 12, 12);
+  graph_add_vertex(&g, 10, 12);
 
   printf("%zu\n", g.count);
   bfs(&g, 2);

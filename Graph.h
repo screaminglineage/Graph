@@ -113,7 +113,7 @@ void graph_add_vertex(Graph *graph, size_t vertex_a, size_t vertex_b) {
 }
 
 void graph_del(Graph *graph) {
-  for (size_t i = 0; i < graph->count; i++) {
+  for (size_t i = 0; i < graph->max_id; i++) {
     free(graph->v[i].data);
     graph->v[i].size = 0;
     graph->v[i].capacity = 0;

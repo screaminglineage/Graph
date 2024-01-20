@@ -88,17 +88,15 @@ size_t que_pop(Queue *que) {
   return item;
 }
 
-// Perform Breadth First Search
-void bfs(Graph *graph, size_t start) {
-  int visited[MAX] = {0};
-  Queue vertices = que_init();
+void que_del(Queue *que) {
+  que->front = 0;
+  que->rear = 0;
+  que->count = 0;
+}
 
-  // deal with disconnected vertices later on
-  // assume all graphs start with a vertex of ID: 0 for now
-  que_push(&vertices, start);
-
-  while (!que_empty(&vertices)) {
-    size_t vertex_id = que_pop(&vertices);
+static void bfs_main(Graph *graph, Queue *vertices, int *visited) {
+  while (!que_empty(vertices)) {
+    size_t vertex_id = que_pop(vertices);
 
     // skip if vertex is already visited
     if (!set_add(visited, vertex_id)) {
@@ -108,8 +106,27 @@ void bfs(Graph *graph, size_t start) {
 
     Vertices children = graph->v[vertex_id];
     for (size_t i = 0; i < children.size; i++) {
-      que_push(&vertices, children.data[i]);
+      que_push(vertices, children.data[i]);
     }
+  }
+}
+
+// Perform Breadth First Search
+void bfs(Graph *graph, size_t start) {
+  Queue vertices = que_init();
+  que_push(&vertices, start);
+
+  int visited[MAX] = {0};
+  bfs_main(graph, &vertices, visited);
+  que_del(&vertices);
+
+  // handle disconnected vertices
+  for (size_t i = 0; i < graph->count; i++) {
+    if (visited[i] > 0) {
+      continue;
+    }
+    que_push(&vertices, i);
+    bfs_main(graph, &vertices, visited);
   }
 }
 

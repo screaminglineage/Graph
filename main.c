@@ -88,13 +88,13 @@ size_t que_pop(Queue *que) {
 }
 
 // Perform Breadth First Search
-void bfs(Graph *graph) {
+void bfs(Graph *graph, size_t start) {
   int visited[MAX] = {0};
   Queue vertices = {0};
 
   // deal with disconnected vertices later on
   // assume all graphs start with a vertex of ID: 0 for now
-  que_push(&vertices, 0);
+  que_push(&vertices, start);
 
   while (!que_empty(&vertices)) {
     size_t vertex_id = que_pop(&vertices);
@@ -116,11 +116,13 @@ int main() {
   Graph g = graph_init();
 
   graph_add_vertex(&g, 0, 1);
-  graph_add_vertex(&g, 0, );
+  graph_add_vertex(&g, 0, 2);
 
   graph_add_vertex(&g, 1, 0);
   graph_add_vertex(&g, 1, 2);
 
+  graph_add_vertex(&g, 2, 0);
+  graph_add_vertex(&g, 2, 1);
   graph_add_vertex(&g, 2, 3);
 
   graph_add_vertex(&g, 3, 5);
@@ -138,7 +140,7 @@ int main() {
   graph_add_vertex(&g, 7, 8);
 
   printf("%zu\n", g.count);
-  bfs(&g);
+  bfs(&g, 2);
 
   return 0;
 }

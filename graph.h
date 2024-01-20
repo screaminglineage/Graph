@@ -27,6 +27,10 @@ typedef struct {
 Graph graph_init(void);
 
 // Add connection to graph between `vertex_a` and `vertex_b`
+//
+// Assumes that the vertex IDs are inserted consecutively,
+// ie. insertion order is 1, 2, 3, 4, ... and not 1, 3, 100, 399
+// 4, 3, 2, 1 or 2, 1, 3, 4 are both fine as the insertion order doesnt matter
 void graph_add_vertex(Graph *graph, size_t vertex_a, size_t vertex_b);
 
 // Delete the graph

@@ -21,7 +21,6 @@ int main() {
   graph_add_vertex(&g, 9, 9);
 
   printf("%zu\n", g.count);
-  printf("%zu\n", g.v[100].size);
   bfs(&g, 2);
 
   return 0;

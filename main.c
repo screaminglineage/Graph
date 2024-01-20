@@ -72,6 +72,7 @@ typedef struct {
   size_t count;
 } Queue;
 
+Queue que_init() { return (Queue){0}; }
 bool que_empty(Queue *que) { return que->count == 0; }
 
 void que_push(Queue *que, size_t item) {
@@ -90,7 +91,7 @@ size_t que_pop(Queue *que) {
 // Perform Breadth First Search
 void bfs(Graph *graph, size_t start) {
   int visited[MAX] = {0};
-  Queue vertices = {0};
+  Queue vertices = que_init();
 
   // deal with disconnected vertices later on
   // assume all graphs start with a vertex of ID: 0 for now

@@ -7,11 +7,8 @@ int main() {
   graph_add_vertex(&g, 0, 1);
   graph_add_vertex(&g, 0, 2);
 
-  graph_add_vertex(&g, 1, 0);
   graph_add_vertex(&g, 1, 2);
 
-  graph_add_vertex(&g, 2, 0);
-  graph_add_vertex(&g, 2, 1);
   graph_add_vertex(&g, 2, 3);
 
   graph_add_vertex(&g, 3, 5);
@@ -20,15 +17,11 @@ int main() {
   graph_add_vertex(&g, 4, 5);
   graph_add_vertex(&g, 4, 6);
 
-  graph_add_vertex(&g, 5, 4);
-  graph_add_vertex(&g, 5, 3);
-
-  graph_add_vertex(&g, 6, 4);
-  graph_add_vertex(&g, 6, 3);
-
   graph_add_vertex(&g, 7, 8);
+  graph_add_vertex(&g, 9, 9);
 
   printf("%zu\n", g.count);
+  printf("%zu\n", g.v[100].size);
   bfs(&g, 2);
 
   return 0;

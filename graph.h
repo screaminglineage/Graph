@@ -27,7 +27,6 @@ typedef struct {
 Graph graph_init(void);
 
 // Add connection to graph between `vertex_a` and `vertex_b`
-// TODO: automatically add the opposite (`vertex_b` to `vertex_a`) when adding
 void graph_add_vertex(Graph *graph, size_t vertex_a, size_t vertex_b);
 
 // Delete the graph
@@ -83,14 +82,19 @@ bool set_add(bool *set, size_t item) {
 Graph graph_init() { return (Graph){0}; }
 
 void graph_add_vertex(Graph *graph, size_t vertex_a, size_t vertex_b) {
-  assert(vertex_a < GRAPH_VERTEX_MAX && "Vertex ID too high!");
+  assert(vertex_a < GRAPH_VERTEX_MAX && vertex_b < GRAPH_VERTEX_MAX &&
+         "Vertex ID too high!");
   assert(graph->count <= GRAPH_VERTEX_MAX && "Maximum vertices reached!");
 
   // vertex didnt previously exist
   if (graph->v[vertex_a].size == 0) {
     graph->count++;
+    DYN_ADD(&graph->v[vertex_a], vertex_b);
   }
-  DYN_ADD(&graph->v[vertex_a], vertex_b);
+  if (graph->v[vertex_b].size == 0 && vertex_a != vertex_b) {
+    graph->count++;
+    DYN_ADD(&graph->v[vertex_b], vertex_a);
+  }
 }
 
 void graph_del(Graph *graph) {
@@ -129,7 +133,7 @@ void queue_del(Queue *queue) {
   queue->count = 0;
 }
 
-static void bfs_main(Graph *graph, Queue *vertices, bool *visited) {
+static inline void bfs_main(Graph *graph, Queue *vertices, bool *visited) {
   while (!queue_is_empty(vertices)) {
     size_t vertex_id = queue_pop(vertices);
 

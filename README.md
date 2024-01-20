@@ -3,7 +3,9 @@
 Simple Graph Implementation in C using a single header file, inspired by https://github.com/nothings/stb/.
 
 The graph is currently uses an [Adjacency List](https://en.wikipedia.org/wiki/Adjacency_list). 
+
 However some other required structures are currently allocated on the stack which need to be updated to use dynamic allocation instead.
+
 Also supports performing Breadth First Search as well as automatically adding the corresponding opposite vertex when a vertex is added, 
 ie. adding vertices 0 and 1, (using `graph_add_vertex`) will also add vertices 1 and 0 correspondingly to the adjacency list.
 

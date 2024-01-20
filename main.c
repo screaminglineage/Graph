@@ -18,9 +18,18 @@
     (da)->data[(da)->size++] = item;                                           \
   } while (0)
 
+// Returns true if item doesnt already exist, true otherwise
+bool set_add(int *set, size_t item) {
+  if (set[item] > 0) {
+    return false;
+  }
+  set[item] += 1;
+  return true;
+}
+
 // Dynamic Array consisting of vertices represented by an int id
 typedef struct {
-  int *data;
+  size_t *data;
   size_t size;
   size_t capacity;
 } Vertices;
@@ -32,10 +41,15 @@ typedef struct {
 
 Graph graph_init() { return (Graph){0}; }
 
-void graph_add_vertex(Graph *graph, int vertex) {
+void graph_add_vertex(Graph *graph, size_t vertex, size_t new_vertex) {
+  assert(vertex < MAX && "Vertex too high!");
   assert(graph->count <= MAX && "Maximum vertices reached!");
-  DYN_ADD(&graph->v[graph->count], vertex);
-  graph->count++;
+
+  // vertex didnt previously exist
+  if (graph->v[vertex].size == 0) {
+    graph->count++;
+  }
+  DYN_ADD(&graph->v[vertex], new_vertex);
 }
 
 void graph_del(Graph *graph) {
@@ -47,18 +61,36 @@ void graph_del(Graph *graph) {
   graph->count = 0;
 }
 
-typedef int Set;
-typedef int Queue;
+Vertices graph_vertices(Graph *graph, size_t vertex) {
+  return graph->v[vertex];
+}
 
-bool que_empty(Queue *) { assert(0 && "TODO"); }
-bool que_push(Queue *, size_t) { assert(0 && "TODO"); }
-bool que_pop(Queue *) { assert(0 && "TODO"); }
-bool set_get(Set *, size_t) { assert(0 && "TODO"); }
+typedef struct {
+  size_t data[MAX];
+  size_t front;
+  size_t rear;
+  size_t count;
+} Queue;
+
+bool que_empty(Queue *que) { return que->count == 0; }
+
+void que_push(Queue *que, size_t item) {
+  assert(que->count <= MAX && "Queue is Full!");
+  que->data[que->rear++] = item;
+  que->count++;
+}
+
+size_t que_pop(Queue *que) {
+  assert(que->count != 0 && "Queue is Empty!");
+  size_t item = que->data[que->front++];
+  que->count--;
+  return item;
+}
 
 // Perform Breadth First Search
 void bfs(Graph *graph) {
-  Set visited = {MAX};
-  Queue vertices = {MAX};
+  int visited[MAX] = {0};
+  Queue vertices = {0};
 
   // deal with disconnected vertices later on
   // assume all graphs start with a vertex of ID: 0 for now
@@ -68,7 +100,7 @@ void bfs(Graph *graph) {
     size_t vertex_id = que_pop(&vertices);
 
     // skip if vertex is already visited
-    if (set_get(&visited, vertex_id)) {
+    if (!set_add(visited, vertex_id)) {
       continue;
     }
     printf("%zu ", vertex_id);
@@ -83,12 +115,30 @@ void bfs(Graph *graph) {
 int main() {
   Graph g = graph_init();
 
-  printf("%zu\n", g.count);
+  graph_add_vertex(&g, 0, 1);
+  graph_add_vertex(&g, 0, );
 
-  graph_add_vertex(&g, 23);
-  printf("%d\n", g.v[0].data[0]);
-  graph_del(&g);
-  printf("%zu %zu %zu\n", g.count, g.v[0].size, g.v[0].capacity);
+  graph_add_vertex(&g, 1, 0);
+  graph_add_vertex(&g, 1, 2);
+
+  graph_add_vertex(&g, 2, 3);
+
+  graph_add_vertex(&g, 3, 5);
+  graph_add_vertex(&g, 3, 6);
+
+  graph_add_vertex(&g, 4, 5);
+  graph_add_vertex(&g, 4, 6);
+
+  graph_add_vertex(&g, 5, 4);
+  graph_add_vertex(&g, 5, 3);
+
+  graph_add_vertex(&g, 6, 4);
+  graph_add_vertex(&g, 6, 3);
+
+  graph_add_vertex(&g, 7, 8);
+
+  printf("%zu\n", g.count);
+  bfs(&g);
 
   return 0;
 }

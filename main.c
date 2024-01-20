@@ -19,11 +19,11 @@
   } while (0)
 
 // Returns true if item doesnt already exist, true otherwise
-bool set_add(int *set, size_t item) {
-  if (set[item] > 0) {
+bool set_add(bool *set, size_t item) {
+  if (set[item]) {
     return false;
   }
-  set[item] += 1;
+  set[item] = true;
   return true;
 }
 
@@ -94,7 +94,7 @@ void que_del(Queue *que) {
   que->count = 0;
 }
 
-static void bfs_main(Graph *graph, Queue *vertices, int *visited) {
+static void bfs_main(Graph *graph, Queue *vertices, bool *visited) {
   while (!que_empty(vertices)) {
     size_t vertex_id = que_pop(vertices);
 
@@ -116,7 +116,7 @@ void bfs(Graph *graph, size_t start) {
   Queue vertices = que_init();
   que_push(&vertices, start);
 
-  int visited[MAX] = {0};
+  bool visited[MAX] = {0};
   bfs_main(graph, &vertices, visited);
   que_del(&vertices);
 

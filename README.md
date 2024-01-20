@@ -10,10 +10,10 @@ Also supports performing Breadth First Search as well as automatically adding th
 ie. adding vertices 0 and 1, (using `graph_add_vertex`) will also add vertices 1 and 0 correspondingly to the adjacency list.
 
 
-## Build Instructions
+## Building and Running the Example
 
 ```
-gcc main.c -o main
+gcc example.c -o example && ./example
 ```
 
 ## Using Graph.h

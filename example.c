@@ -5,6 +5,7 @@ int main() {
   Graph g = graph_init();
 
   graph_add_vertex(&g, 0, 1);
+  graph_add_vertex(&g, 0, 25);
   graph_add_vertex(&g, 0, 2);
 
   graph_add_vertex(&g, 1, 2);
@@ -18,7 +19,9 @@ int main() {
   graph_add_vertex(&g, 4, 6);
 
   graph_add_vertex(&g, 7, 8);
-  graph_add_vertex(&g, 9, 9);
+
+  // BFS works with disconnected vertices as well
+  graph_add_vertex(&g, 12, 12);
 
   printf("%zu\n", g.count);
   bfs(&g, 2);

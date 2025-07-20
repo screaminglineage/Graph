@@ -21,14 +21,15 @@ typedef struct {
 // count stores the no. of vertices present in the graph
 typedef struct {
   Vertices v[GRAPH_VERTEX_MAX];
+  bool occupied[GRAPH_VERTEX_MAX];
   size_t count;
   size_t max_id;
 } Graph;
 
 Graph graph_init(void);
 
-// Add connection to graph between `vertex_a` and `vertex_b`
-void graph_add_vertex(Graph *graph, size_t vertex_a, size_t vertex_b);
+// Add edge connecting `vertex_a` and `vertex_b`
+void graph_add_edge(Graph *graph, size_t vertex_a, size_t vertex_b);
 
 // Delete the graph
 void graph_del(Graph *graph);
@@ -36,8 +37,8 @@ void graph_del(Graph *graph);
 // Returns all vertices connected to `vertex`
 Vertices graph_vertices(Graph *graph, size_t vertex);
 
-// Perform Breadth First Search
-void bfs(Graph *graph, size_t start);
+// Performs Breadth First Order Traversal and stores the vertices in `vertices`
+void graph_bfs(Graph *graph, size_t start, Vertices *vertices);
 
 // Returns true if item doesnt already exist, true otherwise
 bool set_add(bool *set, size_t item);
@@ -82,7 +83,7 @@ bool set_add(bool *set, size_t item) {
 
 Graph graph_init() { return (Graph){0}; }
 
-void graph_add_vertex(Graph *graph, size_t vertex_a, size_t vertex_b) {
+void graph_add_edge(Graph *graph, size_t vertex_a, size_t vertex_b) {
   assert(vertex_a < GRAPH_VERTEX_MAX && vertex_b < GRAPH_VERTEX_MAX &&
          "Vertex ID too high!");
   assert(graph->count <= GRAPH_VERTEX_MAX && "Maximum vertices reached!");
@@ -95,6 +96,7 @@ void graph_add_vertex(Graph *graph, size_t vertex_a, size_t vertex_b) {
 
   // vertex didnt previously exist
   if (graph->v[vertex_a].size == 0) {
+    graph->occupied[vertex_a] = true;
     graph->count++;
   }
   DYN_ADD(&graph->v[vertex_a], vertex_b);
@@ -102,6 +104,7 @@ void graph_add_vertex(Graph *graph, size_t vertex_a, size_t vertex_b) {
   // add the opposite vertex only if they are not same
   if (vertex_a != vertex_b) {
     if (graph->v[vertex_b].size == 0) {
+      graph->occupied[vertex_b] = true;
       graph->count++;
     }
     DYN_ADD(&graph->v[vertex_b], vertex_a);
@@ -144,7 +147,7 @@ void queue_del(Queue *queue) {
   queue->count = 0;
 }
 
-static inline void bfs_main(Graph *graph, Queue *vertices, bool *visited) {
+static inline void bfs_main(Graph *graph, Queue *vertices, bool *visited, Vertices *vertices_out) {
   while (!queue_is_empty(vertices)) {
     size_t vertex_id = queue_pop(vertices);
 
@@ -152,7 +155,8 @@ static inline void bfs_main(Graph *graph, Queue *vertices, bool *visited) {
     if (!set_add(visited, vertex_id)) {
       continue;
     }
-    printf("%zu ", vertex_id);
+
+    DYN_ADD(vertices_out, vertex_id);
 
     Vertices children = graph->v[vertex_id];
     for (size_t i = 0; i < children.size; i++) {
@@ -162,7 +166,7 @@ static inline void bfs_main(Graph *graph, Queue *vertices, bool *visited) {
 }
 
 // Perform Breadth First Search
-void bfs(Graph *graph, size_t start) {
+void graph_bfs(Graph *graph, size_t start, Vertices *vertices_out) {
   if (graph->v[start].size == 0) {
     return;
   }
@@ -170,7 +174,7 @@ void bfs(Graph *graph, size_t start) {
   queue_push(&vertices, start);
 
   bool visited[GRAPH_VERTEX_MAX] = {0};
-  bfs_main(graph, &vertices, visited);
+  bfs_main(graph, &vertices, visited, vertices_out);
   queue_del(&vertices);
 
   // handle disconnected vertices
@@ -179,7 +183,7 @@ void bfs(Graph *graph, size_t start) {
       continue;
     }
     queue_push(&vertices, i);
-    bfs_main(graph, &vertices, visited);
+    bfs_main(graph, &vertices, visited, vertices_out);
   }
 }
 #endif // !GRAPH_H

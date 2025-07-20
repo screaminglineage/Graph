@@ -14,6 +14,15 @@ ie. adding vertices 0 and 1, (using `graph_add_edge`) will also add vertices 1 a
 
 ```
 gcc example.c -o example && ./example
+
+```
+
+### Visualizer
+
+- Install [raylib](https://github.com/raysan5/raylib)
+
+```
+gcc visualizer.c -lraylib -lm -o visualizer && ./visualizer
 ```
 
 ## Using Graph.h

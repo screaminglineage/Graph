@@ -12,9 +12,10 @@ ie. adding vertices 0 and 1, (using `graph_add_edge`) will also add vertices 1 a
 
 ## Building and Running the Example
 
+### Basic Example
+
 ```
 gcc example.c -o example && ./example
-
 ```
 
 ### Visualizer
